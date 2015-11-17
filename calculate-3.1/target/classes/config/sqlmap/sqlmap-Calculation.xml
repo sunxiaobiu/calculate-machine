@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="CalculationRecordModel">
+
+    <cache type="PERPETUAL" eviction="LRU" flushInterval="60000" size="512" readOnly="true"/>
+
+    <resultMap id="calculationResultMap" type="CalculationRecordModel">
+        <id property="ID" column="ID"/>
+        <result property="macAddress" column="MacAddress"/>
+        <result property="preNumber" column="PreNumber"/>
+        <result property="currentNumber" column="CurrentNumber"/>
+        <result property="operator" column="Operator"/>
+        <result property="result" column="Result"/>
+        <result property="createdTime" column="CreatedTime"/>
+        <result property="status" column="Status"/>
+    </resultMap>
+
+    <sql id="calculationColumns">
+         ID,
+         MacAddress,
+         PreNumber,
+         CurrentNumber,
+         Operator,
+         Result,
+         CreatedTime,
+         Status
+    </sql>
+
+    <select id="getCalculationRecordByID" parameterType="int" resultType="CalculationRecordModel" useCache="false">
+        select
+        <include refid="calculationColumns"/>
+        from OperationInfo where ID = #{calculationRecordID}
+    </select>
+
+    <select id="getCalculationRecordByMacAddress" parameterType="String" resultType="CalculationRecordModel"
+            useCache="false">
+        select
+        <include refid="calculationColumns"/>
+        from OperationInfo where MacAddress = #{MacAddress}
+    </select>
+
+    <insert id="insertCalculationRecord" parameterType="CalculationRecordModel"
+            useGeneratedKeys="true" keyProperty="ID">
+        insert into OperationInfo (ID,MacAddress,PreNumber,CurrentNumber,Operator,Result,CreatedTime,Status)
+        values (#{ID},#{macAddress},#{preNumber},#{currentNumber},#{operator},#{result},#{createdTime},#{status})
+    </insert>
+
+    <delete id="deleteCalculationRecord" parameterType="CalculationRecordModel">
+        delete from OperationInfo where ID = #{ID}
+    </delete>
+
+    <update id="updateCalculationRecord" parameterType="CalculationRecordModel">
+        update OperationInfo set
+        PreNumber= #{preNumber},
+        CurrentNumber = #{currentNumber},
+        Operator = #{operator},
+        Result = #{result},
+        CreatedTime = #{createdTime},
+        Status = #{status}
+        where ID = #{ID}
+    </update>
+
+</mapper>
